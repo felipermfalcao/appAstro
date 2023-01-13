@@ -73,22 +73,25 @@ function AuthProvider ({children}){
           });
       }
 
+      async function Logout(){
+        await AsyncStorage.clear()
+        .then(()=> {
+            setUserLogado(0);        
+        })    
+    }
+
+    async function storageUser(data){
+      await AsyncStorage.setItem('userData', JSON.stringify(data));
+  }
+
     return(
-        <AuthContext.Provider value={{logado: userLogado, Login, loadingAuth, dadosUser, loading}}>
+        <AuthContext.Provider value={{logado: userLogado, Login, loadingAuth, dadosUser, loading, Logout}}>
             {children}
         </AuthContext.Provider>
     );
 }
 
-async function Logout(){
-    await AsyncStorage.clear()
-    .then(()=> {
-        setUserLogado(0);        
-    })    
-}
 
-async function storageUser(data){
-    await AsyncStorage.setItem('userData', JSON.stringify(data));
-}
+
 
 export default AuthProvider;

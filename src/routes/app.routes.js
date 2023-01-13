@@ -28,7 +28,7 @@ function AppRoutes() {
     headerTintColor: '#999',
   }}
    >
-    <Drawer.Screen name='Home' component={Home}
+    <Drawer.Screen name='APOD' component={Home}
     options={{ 
       headerShown: true,
       drawerIcon: ({focused, size}) => (
