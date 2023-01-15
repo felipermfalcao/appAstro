@@ -32,7 +32,7 @@ export default function Home() {
         formData.append('token', dadosUser.token);
         formData.append('dataEscolhida', dataParaEnvio);      
 
-      axios.post('https://felipefalcao.com.br/appAstro/nasa/', formData, {
+      await axios.post('https://felipefalcao.com.br/appAstro/nasa/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       }).then(response => {
         //console.log(response.data);
