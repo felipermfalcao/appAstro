@@ -4,6 +4,9 @@ import { Icon } from '@rneui/themed';
 
 import Home from '../pages/Home'
 import Tempo from '../pages/Tempo'
+import News from '../pages/News/news';
+import Futebol from '../pages/Futebol/futebol';
+import Satelite from '../pages/Satelite/satelite';
 import CustomDrawer from '../components/CustomDrawer';
 
 const Drawer = createDrawerNavigator();
@@ -11,7 +14,7 @@ const Drawer = createDrawerNavigator();
 function AppRoutes() {
  return (
    <Drawer.Navigator
-   initialRouteName="Tempo"
+   initialRouteName="APOD"
    drawerContent={CustomDrawer}
 
    screenOptions={{
@@ -57,8 +60,49 @@ function AppRoutes() {
      ),
      }}    
     />
-    
-    <Drawer.Screen name='Home 3' component={Home} options={{ headerShown: true }} />
+
+<Drawer.Screen name='News' component={News}
+    options={{ 
+      headerShown: true,
+      drawerIcon: ({focused, size}) => (
+        <Icon
+        name='newspaper-outline'
+        type='ionicon'
+        size={size}
+        color={focused ? '#2670DE' : '#fff'}
+      />
+     ),
+     }}    
+    />
+
+<Drawer.Screen name='Futebol' component={Futebol}
+    options={{ 
+      headerShown: true,
+      drawerIcon: ({focused, size}) => (
+        <Icon
+        name='football-outline'
+        type='ionicon'
+        size={size}
+        color={focused ? '#2670DE' : '#fff'}
+      />
+     ),
+     }}    
+    />
+
+<Drawer.Screen name='Satélites' component={Satelite}
+    options={{ 
+      headerShown: true,
+      drawerIcon: ({focused, size}) => (
+        <Icon
+        name='earth-outline'
+        type='ionicon'
+        size={size}
+        color={focused ? '#2670DE' : '#fff'}
+      />
+     ),
+     }}    
+    />
+
    </Drawer.Navigator>
   );
 }

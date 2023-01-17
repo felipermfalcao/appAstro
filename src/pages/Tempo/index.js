@@ -1,11 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Modal  } from 'react-native';
-import { Icon, Button, Divider } from '@rneui/themed';
+import { View, Text, StyleSheet, ScrollView, Image, Modal, FlatList, Dimensions, ActivityIndicator  } from 'react-native';
+import { Icon, Button, Divider, Card } from '@rneui/themed';
 import axios from 'axios';
 import moment from 'moment';
 import { WebView } from 'react-native-webview';
+import {
+  LineChart,
+} from "react-native-chart-kit";
 
 import { AuthContext } from '../../context/auth';
+
+import CardHora from '../../components/cardHora';
+import CardDia from '../../components/cardDia';
+import BotaoAlerta from '../../components/btnAlerta';
 
 //import { TabItem } from '@rneui/base/dist/Tab/Tab.Item';
 
@@ -14,21 +21,45 @@ export default function Home() {
   const [uviModal, setUviModal] = useState(false);
   const [humidadeModal, setHumidadeModal] = useState(false);
   const {dadosUser} = useContext(AuthContext);
-  const [tempo, setTempo] = useState([]);
+  const [tempo, setTempo] = useState({});
+  const [atualiza, setAtualiza] = useState(1);
+  const [atualizaLoading, setAtualizaLoading] = useState(false);
+  const [tempHora, setTempHora] = useState([]);
+  const [tempDia, setTempDia] = useState([]);
+  const [loading, setLoading] = useState(true);
+  //const [labelTempHora, setLabelTempHora] = useState(['1', '2', '3']);
 
-
+  const screenWidth = Dimensions.get('window').width;
+  
   useEffect(() => {
 
     async function loadTempo (){
 
       const formData = new FormData();
-      await formData.append('token', dadosUser.token);
+      formData.append('token', dadosUser.token);
 
       await axios.post('https://felipefalcao.com.br/appAstro/tempo/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data'}
       }).then(response => {
         //console.log(response.data);
         setTempo(response.data);
+        setAtualizaLoading(false);
+
+        const tempArray = response.data.hourly.map(hour => hour.temp.toFixed(0));
+        const tempArray2 = response.data.daily.map(day => day.temp.day.toFixed(0));
+        //console.log(tempArray);
+        setTempHora(tempArray);
+        setTempDia(tempArray2);
+
+      //   const labelTempArray = response.data.hourly.map(hour => {
+      //     const horarioDiaGraf = new Date(hour.dt);
+      //     const formatted = moment.unix(horarioDiaGraf).utcOffset(-3).format('HH');
+      //     return formatted
+      // });
+      //   const tempString = '' + labelTempArray.map(temp => `${temp}`).join(', ') + ''
+      //   console.log(tempString);
+      //   setLabelTempHora(tempString);
+      setLoading(false);
       }).catch(error => {
         console.log(error);
       });
@@ -37,7 +68,83 @@ export default function Home() {
 
     loadTempo();
 
-  }, [])
+  }, [atualiza]);
+
+
+if (loading == true){
+  return(
+    <View style={{flex: 1, backgroundColor: '#333', justifyContent: 'center'}}>
+    <ActivityIndicator size="large" />
+    <Text style={{textAlign: 'center'}}>Carregando dados</Text>
+    </View>
+  );
+}
+else{
+  function atualizar (){
+    setAtualiza(atualiza + 1);
+    setAtualizaLoading(true);
+    console.log('teste');
+  }
+
+  const data = {
+    labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48'],
+    datasets: [
+      {
+        data: tempHora,
+        strokeWidth: 2, // optional
+        bezierCurve : true
+      }
+    ]
+  }
+  
+  const chartConfig = {
+    backgroundColor: '#333',
+    backgroundGradientFrom: '#003265',
+    backgroundGradientTo: '#082f37',
+    decimalPlaces: 2, // optional, defaults to 2dp
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    style: {
+      borderRadius: 16
+    },
+    propsForDots: {
+      r: '6',
+      strokeWidth: '2',
+      stroke: '#ffa726'
+    }
+  }
+
+  const dataDia = {
+    labels: ['+1', '+2', '+3', '+4', '+5', '+6', '+7', '+8'],
+    datasets: [
+      {
+        data: tempDia,
+        strokeWidth: 2, // optional
+        bezierCurve : true
+      }
+    ]
+  }
+  
+  const chartConfigDia = {
+    backgroundColor: '#333',
+    backgroundGradientFrom: '#003265',
+    backgroundGradientTo: '#082f37',
+    decimalPlaces: 2, // optional, defaults to 2dp
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    style: {
+      borderRadius: 16
+    },
+    propsForDots: {
+      r: '6',
+      strokeWidth: '2',
+      stroke: '#ffa726'
+    }
+  }
+
+  moment.locale('pt-br');
+
+  //console.log(tempHora);
 
   const unixTimestamp = tempo.current.dt;
   const horarioBrasil = moment.unix(unixTimestamp).utcOffset(-3).format('HH:mm');
@@ -49,10 +156,9 @@ export default function Home() {
   const porSol = moment.unix(unixTimestamp3).utcOffset(-3).format('HH:mm');
 
  return (
-        
+      
   <ScrollView style={styles.container}>
-
-    
+        
 <Modal
   animationType="slide"
   transparent={true}
@@ -141,11 +247,18 @@ export default function Home() {
     <Text style={styles.cidade}>{tempo.timezone}</Text>
 
     <Text style={styles.iconUpdate}>
-      <Icon
-        name='reload-outline'
-        type='ionicon'
-        color='#fff'
-        />
+    <Button
+          loading={atualizaLoading}
+          buttonStyle={{ backgroundColor: '#333'}}
+          onPress={() => atualizar()}
+          icon={{
+            name: 'reload-outline',
+            type: 'ionicon',
+            size: 22,
+            color: 'white',
+          }}
+          iconLeft
+         />
     </Text>
     </View>
     
@@ -165,6 +278,10 @@ export default function Home() {
     <View style={{flex: 2}}>
       <Text style={styles.graus}>{tempo.current.temp.toFixed(0)}º </Text>
     </View>
+    </View>
+
+    <View style={{flex: 1, backgroundColor: '#666'}}>
+      {tempo.alerts ? <BotaoAlerta data={tempo.alerts}/> : ''}    
     </View>
 
     <Divider width={1} color={'#666'} insetType="middle" inset={true} />  
@@ -240,7 +357,7 @@ export default function Home() {
           type='feather'
           color='#fff'
         />
-        <Text style={styles.infos}>{tempo.current.wind_speed}m/s</Text>
+        <Text style={styles.infos}>{tempo.current.wind_speed.toFixed(0)}m/s</Text>
       </View>      
 
       <View style={{flexDirection: 'row'}}>
@@ -264,8 +381,84 @@ export default function Home() {
 
     </View>
 
+    <View style={{flex: 1, flexDirection: 'row', paddingLeft: 30, paddingRight: 30, paddingTop: 30,
+                  justifyContent: 'space-around'}}>
+
+      <View style={{flexDirection: 'row'}}>
+        <Icon
+          name='cloud-rain'
+          type='feather'
+          color='#fff'
+        />
+        <Text style={styles.infos}>{tempo.current.rain ? tempo.current.rain['1h'] : '0'}mm</Text>
+      </View>
+
+      <View style={{flexDirection: 'row'}}>
+        <Icon
+          name='cloud-snow'
+          type='feather'
+          color='#fff'
+        />
+        <Text style={styles.infos}>{tempo.current.snow ? tempo.current.snow['1h'] : '0'}mm</Text>
+      </View> 
+
+    </View>
+
+    <Divider width={1} color={'#666'} insetType="middle" inset={true} style={{paddingTop: 25}} />
+
+    <View>      
+      <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', paddingTop: 20}}>Próximas horas</Text>
+      <FlatList 
+      showsHorizontalScrollIndicator={false}
+      data={tempo.hourly}
+      horizontal={true}
+      renderItem={({item}) => <CardHora data={item}/>}
+      />
+
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+    <LineChart
+      style={{
+        marginVertical: 8,
+        borderRadius: 16
+      }}
+      data={data}
+      width={1500}
+      height={200}
+      chartConfig={chartConfig}
+      bezier
+    />
+    </ScrollView>
+    </View>
+
+    <View>      
+      <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold', paddingTop: 20}}>Próximos dias</Text>
+      <FlatList 
+      showsHorizontalScrollIndicator={false}
+      data={tempo.daily}
+      horizontal={true}
+      renderItem={({item}) => <CardDia data={item}/>}
+      />
+
+    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+    <LineChart
+      style={{
+        marginVertical: 8,
+        borderRadius: 16
+      }}
+      data={dataDia}
+      width={screenWidth}
+      height={200}
+      chartConfig={chartConfigDia}
+      bezier
+    />
+    </ScrollView>
+
+      
+    </View>
+
    </ScrollView>
   );
+}
 }
 
 const styles = StyleSheet.create({
@@ -283,7 +476,7 @@ const styles = StyleSheet.create({
   },
   iconUpdate:{
     width: 50,
-    paddingRight: 10,
+    marginRight: 15,
     alignItems: 'center',
     alignContent: 'center',
     alignSelf: 'flex-end'
