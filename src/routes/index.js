@@ -13,7 +13,7 @@ function Routes() {
       return(
         <View style={{flex: 1, justifyContent:'center', alignItems:'center', backgroundColor: '#333'}}>
           <ActivityIndicator size={50} color='#fff'/>
-          <Text>Entrando...</Text>
+          {/* <Text>Entrando...</Text> */}
         </View>
       );
     }

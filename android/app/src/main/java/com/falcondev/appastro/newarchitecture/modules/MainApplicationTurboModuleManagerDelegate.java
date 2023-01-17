@@ -1,4 +1,4 @@
-package com.appastro.newarchitecture.modules;
+package com.falcondev.appastro.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

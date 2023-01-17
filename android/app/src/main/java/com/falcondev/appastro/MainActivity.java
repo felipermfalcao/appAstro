@@ -1,4 +1,4 @@
-package com.appastro;
+package com.falcondev.appastro;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;
