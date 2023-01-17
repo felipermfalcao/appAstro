@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Linking  } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Linking, ActivityIndicator  } from 'react-native';
 import { Icon, Button } from '@rneui/themed';
 import axios from 'axios';
 import moment from 'moment';
@@ -8,9 +8,7 @@ import { WebView } from 'react-native-webview';
 
 
 import { AuthContext } from '../../context/auth';
-
-import apiApod from '../../services/apiApod';
-import { TabItem } from '@rneui/base/dist/Tab/Tab.Item';
+import Loading from '../../components/loadingGeral';
 
 export default function Home() {
   const {dadosUser} = useContext(AuthContext);
@@ -19,6 +17,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [apodType, setApodType] = useState('');
   const [loadingData, setLoadingData] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
 
@@ -38,6 +37,7 @@ export default function Home() {
         //console.log(response.data);
         setApod(response.data);
         setLoadingData(false);
+        setLoading(false);
       }).catch(error => {
         console.log(error);
       });
@@ -46,6 +46,15 @@ export default function Home() {
 
     loadApod();
   }, [dateApod])
+
+  if(loading == true)
+  {
+    return(
+    <Loading />
+    );
+  }
+  else
+  {
 
   if (apod.media_type == 'video')
   {
@@ -213,6 +222,7 @@ export default function Home() {
    </ScrollView>
   );
 }
+}
 
 const styles = StyleSheet.create({
   container:{
@@ -228,6 +238,8 @@ const styles = StyleSheet.create({
   },
   titleApod:{
     fontSize: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
     color: '#999',
     textAlign: 'center',
     paddingBottom: 5,
@@ -254,3 +266,4 @@ const styles = StyleSheet.create({
     }
 
 });
+

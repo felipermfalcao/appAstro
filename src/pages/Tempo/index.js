@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Modal, FlatList, Dimensions, ActivityIndicator  } from 'react-native';
-import { Icon, Button, Divider, Card } from '@rneui/themed';
+import { Icon, Button, Divider, Card, Input } from '@rneui/themed';
 import axios from 'axios';
 import moment from 'moment';
 import { WebView } from 'react-native-webview';
@@ -27,6 +27,7 @@ export default function Home() {
   const [tempHora, setTempHora] = useState([]);
   const [tempDia, setTempDia] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [local, setLocal] = useState('Fortaleza,CE,Brasil');
   //const [labelTempHora, setLabelTempHora] = useState(['1', '2', '3']);
 
   const screenWidth = Dimensions.get('window').width;
@@ -37,6 +38,7 @@ export default function Home() {
 
       const formData = new FormData();
       formData.append('token', dadosUser.token);
+      formData.append('local', local);
 
       await axios.post('https://felipefalcao.com.br/appAstro/tempo/', formData, {
         headers: { 'Content-Type': 'multipart/form-data'}
@@ -241,6 +243,35 @@ else{
     </View>
   </View>
 </Modal>
+
+<View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+    <Input
+      containerStyle={{width: '80%'}}
+      inputStyle={{color: '#fff'}}
+      placeholder='Cidade, Estado, País'
+      onChangeText={(text) => setLocal(text)}
+      leftIcon={
+        <Icon
+          name='map-outline'
+          size={24}
+          type='ionicon'
+          color='white'
+        />
+      }
+    />
+    <Button
+          loading={atualizaLoading}
+          buttonStyle={{ backgroundColor: '#2089DC', borderRadius: 10}}
+          onPress={() => atualizar()}
+          icon={{
+            name: 'search-outline',
+            type: 'ionicon',
+            size: 22,
+            color: 'white',
+          }}
+          iconLeft
+    />
+</View>
 
 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
     <Text style={styles.topoEsquerdaEspaco}></Text>

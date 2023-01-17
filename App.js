@@ -5,6 +5,7 @@ import { View, Text, Image, StatusBar } from 'react-native';
 //import * as Animatable from 'react-native-animatable';
 import { NavigationContainer } from '@react-navigation/native';
 import OneSignal from 'react-native-onesignal';
+import SplashScreen from 'react-native-splash-screen'
 
 import AuthProvider from './src/context/auth';
 import Routes from './src/routes';
@@ -12,6 +13,7 @@ import Routes from './src/routes';
 export default function appAstro() {
 
   useEffect(()=> {
+    SplashScreen.hide();
     OneSignal.setAppId('288c1e9f-c483-4ad8-9033-c7264ed011ea');
     
     
