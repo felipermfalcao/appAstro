@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useState, useRef} from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Linking, Acti  } from 'react-native';
 import { Icon, Button } from '@rneui/themed';
-import moment from 'moment';
 import { WebView } from 'react-native-webview';
 
 import Loading from '../../components/loadingGeral';

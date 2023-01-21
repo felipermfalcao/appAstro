@@ -20,7 +20,7 @@ export default function CustomDrawer(props) {
         </View>
         <DrawerItemList {...props}/>
 
-        <View>
+        <View style={{marginTop: 25}}>
         <Button
           radius={'sm'}
           color="error"

@@ -1,14 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, memo} from 'react';
 import { View, Text, StyleSheet, Image  } from 'react-native';
 import { Icon, Button, Divider, Card } from '@rneui/themed';
-import moment from 'moment/min/moment-with-locales';
 
 function CardDia ({data}){
     const [lua, setLua] = useState('');
     const [luaImg, setLuaImg] = useState('');
 
-    const unixHora = data.dt;
-    const dia = moment.unix(unixHora).locale('pt-br').format('L');
+    let timestamp = data.dt;
+    let date2 = new Date(timestamp * 1000);
+    //date2.setUTCHours(date2.getUTCHours() - 3);
+    let dia = date2.toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
 
     useEffect (()=>{
 
@@ -69,7 +74,7 @@ function CardDia ({data}){
             <Image style={{height: 80, width: 80, marginTop: 2}}
                 source={{uri: `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`}}
             />
-            <Text style={{flex: 2, color: '#fff', textAlign: 'center', fontSize: 50, fontWeight: 'bold', paddingTop: 4}}>{data.temp.day.toFixed(0)}º</Text>
+            <Text style={{flex: 2, color: '#fff', textAlign: 'center', fontSize: 50, fontWeight: 'bold', paddingTop: 4}}>{data.temp.day.toFixed(0)}<Text style={{fontSize: 12}}>º</Text></Text>
             </View>
 
             <Text style={{textTransform: 'uppercase', fontSize: 15, textAlign: 'center',
@@ -169,4 +174,4 @@ function CardDia ({data}){
     );
 }
 
-export default CardDia;
+export default memo(CardDia);

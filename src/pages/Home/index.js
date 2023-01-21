@@ -1,10 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, Linking, ActivityIndicator  } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, Linking, ActivityIndicator,
+        TouchableOpacity} from 'react-native';
 import { Icon, Button } from '@rneui/themed';
 import axios from 'axios';
-import moment from 'moment';
 import DatePicker from 'react-native-date-picker';
 import { WebView } from 'react-native-webview';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 
 import { AuthContext } from '../../context/auth';
@@ -18,6 +19,7 @@ export default function Home() {
   const [apodType, setApodType] = useState('');
   const [loadingData, setLoadingData] = useState(false);
   const [loading, setLoading] = useState(true);
+  
 
   useEffect(() => {
 
@@ -58,8 +60,18 @@ export default function Home() {
 
   if (apod.media_type == 'video')
   {
-    const date = moment(apod.date);
-  const formattedDate = date.format('DD/MM/YYYY');
+    
+    const copyToClipboard = () => {
+      Clipboard.setString(`${apod.explanation}`);
+      alert('Texto copiado!');
+    };
+
+    let date = new Date(apod.date);
+    let formattedDate = date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
 
   const abrirNavaegador = () => {
     Linking.openURL(apod.url);
@@ -133,7 +145,9 @@ export default function Home() {
     />
 
     <Text style={styles.comentarios}>Comentários</Text>
+    <TouchableOpacity onPress={copyToClipboard}>
     <Text style={styles.titleExplicacao}>{apod.explanation}</Text>
+    </TouchableOpacity>
 
 
    </View>
@@ -141,8 +155,17 @@ export default function Home() {
   );
   }
 
-  const date = moment(apod.date);
-  const formattedDate = date.format('DD/MM/YYYY');
+  const copyToClipboard = () => {
+    Clipboard.setString(`${apod.explanation}`);
+    alert('Texto copiado!');
+  };
+
+  let date = new Date(apod.date);
+  let formattedDate = date.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  });
 
   const abrirNavaegador = () => {
     Linking.openURL(apod.hdurl);
@@ -215,7 +238,9 @@ export default function Home() {
     />
 
     <Text style={styles.comentarios}>Comentários</Text>
+    <TouchableOpacity onPress={copyToClipboard}>
     <Text style={styles.titleExplicacao}>{apod.explanation}</Text>
+    </TouchableOpacity>
 
 
    </View>

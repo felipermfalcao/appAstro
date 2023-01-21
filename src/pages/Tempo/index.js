@@ -2,8 +2,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Modal, FlatList, Dimensions, ActivityIndicator  } from 'react-native';
 import { Icon, Button, Divider, Card, Input } from '@rneui/themed';
 import axios from 'axios';
-import moment from 'moment';
-import { WebView } from 'react-native-webview';
 import {
   LineChart,
 } from "react-native-chart-kit";
@@ -12,7 +10,7 @@ import { AuthContext } from '../../context/auth';
 
 import CardHora from '../../components/cardHora';
 import CardDia from '../../components/cardDia';
-import BotaoAlerta from '../../components/btnAlerta';
+import GeralTempo from '../../components/geralTempo';
 
 //import { TabItem } from '@rneui/base/dist/Tab/Tab.Item';
 
@@ -28,6 +26,7 @@ export default function Home() {
   const [tempDia, setTempDia] = useState([]);
   const [loading, setLoading] = useState(true);
   const [local, setLocal] = useState('Fortaleza,CE,Brasil');
+  const [localTemp, setLocalTemp] = useState('Fortaleza,CE,Brasil');
   //const [labelTempHora, setLabelTempHora] = useState(['1', '2', '3']);
 
   const screenWidth = Dimensions.get('window').width;
@@ -52,15 +51,8 @@ export default function Home() {
         //console.log(tempArray);
         setTempHora(tempArray);
         setTempDia(tempArray2);
+        setLocalTemp(local)
 
-      //   const labelTempArray = response.data.hourly.map(hour => {
-      //     const horarioDiaGraf = new Date(hour.dt);
-      //     const formatted = moment.unix(horarioDiaGraf).utcOffset(-3).format('HH');
-      //     return formatted
-      // });
-      //   const tempString = '' + labelTempArray.map(temp => `${temp}`).join(', ') + ''
-      //   console.log(tempString);
-      //   setLabelTempHora(tempString);
       setLoading(false);
       }).catch(error => {
         console.log(error);
@@ -81,11 +73,53 @@ if (loading == true){
     </View>
   );
 }
+else if(tempo.error)
+{
+  function setAtualizaTeste(){
+    setAtualiza(atualiza + 1);
+    setAtualizaLoading(true);
+  }
+  return(
+    <View style={{flex: 1, backgroundColor: '#333', justifyContent: 'center'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <Input
+          containerStyle={{width: '80%'}}
+          inputStyle={{color: '#fff'}}
+          placeholder='Cidade, Estado, País'
+          onChangeText={(text) => setLocal(text)}
+          leftIcon={
+            <Icon
+              name='map-outline'
+              size={24}
+              type='ionicon'
+              color='white'
+            />
+          }
+        />  
+
+        <Button
+              loading={atualizaLoading}
+              buttonStyle={{ backgroundColor: '#2089DC', borderRadius: 10}}
+              onPress={() => setAtualizaTeste()}
+              icon={{
+                name: 'search-outline',
+                type: 'ionicon',
+                size: 22,
+                color: 'white',
+              }}
+              iconLeft
+        />
+      </View>
+
+      <Text style={{color: '#fff', padding: 20, fontSize: 15, textAlign: 'center'}}>{tempo.error}</Text>
+    </View>
+  );
+}
 else{
   function atualizar (){
     setAtualiza(atualiza + 1);
     setAtualizaLoading(true);
-    console.log('teste');
+    //console.log('teste');
   }
 
   const data = {
@@ -144,23 +178,45 @@ else{
     }
   }
 
-  moment.locale('pt-br');
 
   //console.log(tempHora);
 
-  const unixTimestamp = tempo.current.dt;
-  const horarioBrasil = moment.unix(unixTimestamp).utcOffset(-3).format('HH:mm');
+  let timestamp = tempo.current.dt;
+  let date = new Date(timestamp * 1000);
+  //date.setUTCHours(date.getUTCHours() - 3);
+  let horarioBrasil = date.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 
-  const unixTimestamp2 = tempo.current.sunrise;
-  const nascerSol = moment.unix(unixTimestamp2).utcOffset(-3).format('HH:mm');
+  let timestamp2 = tempo.current.sunrise;
+  let date2 = new Date(timestamp2 * 1000);
+  //date2.setUTCHours(date2.getUTCHours() - 3);
+  let nascerSol = date2.toLocaleString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 
-  const unixTimestamp3 = tempo.current.sunset;
-  const porSol = moment.unix(unixTimestamp3).utcOffset(-3).format('HH:mm');
+  let timestamp3 = tempo.current.sunset;
+  let date3 = new Date(timestamp3 * 1000);
+  //date3.setUTCHours(date3.getUTCHours() - 3);
+  let porSol = date3.toLocaleString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  function mostarModal1(){
+    setModalVisible(true);
+    console.log("modal");
+  }
 
  return (
       
   <ScrollView style={styles.container}>
-        
+
 <Modal
   animationType="slide"
   transparent={true}
@@ -187,7 +243,8 @@ else{
   </View>
 </Modal>
 
-<Modal
+
+            <Modal
   animationType="slide"
   transparent={true}
   visible={humidadeModal}
@@ -249,7 +306,7 @@ else{
       containerStyle={{width: '80%'}}
       inputStyle={{color: '#fff'}}
       placeholder='Cidade, Estado, País'
-      onChangeText={(text) => setLocal(text)}
+      onEndEditing={e => setLocal(e.nativeEvent.text)}
       leftIcon={
         <Icon
           name='map-outline'
@@ -259,6 +316,9 @@ else{
         />
       }
     />
+
+    
+
     <Button
           loading={atualizaLoading}
           buttonStyle={{ backgroundColor: '#2089DC', borderRadius: 10}}
@@ -275,7 +335,7 @@ else{
 
 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
     <Text style={styles.topoEsquerdaEspaco}></Text>
-    <Text style={styles.cidade}>{tempo.timezone}</Text>
+    <Text style={styles.cidade}>{localTemp}</Text>
 
     <Text style={styles.iconUpdate}>
     <Button
@@ -292,148 +352,12 @@ else{
          />
     </Text>
     </View>
-    
 
-    <Text style={styles.horario}>{horarioBrasil}</Text>
-
-    <Text style={styles.descricaoCond}>{tempo.current.weather[0].description}</Text>
-
-    <View style={styles.topo}>
-
-    <View style={{flex: 2}}>
-      <Image style={styles.iconPrincipal}
-      source={{uri: `https://openweathermap.org/img/wn/${tempo.current.weather[0].icon}@4x.png`}}
-      />
-    </View>
-
-    <View style={{flex: 2}}>
-      <Text style={styles.graus}>{tempo.current.temp.toFixed(0)}º </Text>
-    </View>
-    </View>
-
-    <View style={{flex: 1, backgroundColor: '#666'}}>
-      {tempo.alerts ? <BotaoAlerta data={tempo.alerts}/> : ''}    
-    </View>
-
-    <Divider width={1} color={'#666'} insetType="middle" inset={true} />  
-
-
-    <View style={{flex: 1, flexDirection: 'row', padding: 30, justifyContent: 'space-between'}}>
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='sunrise'
-          type='feather'
-          color='#fff'
-        />
-        <Text style={styles.infos}>{nascerSol}</Text>
-      </View>
-
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='sunset'
-          type='feather'
-          color='#fff'
-        />
-        <Text style={styles.infos}>{porSol}</Text>
-      </View>
-
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='thermometer'
-          type='feather'
-          color='#fff'
-          onPress={() => setModalVisible(true)}
-        />
-        <Text style={styles.infos}>{tempo.current.feels_like}</Text>
-      </View>
-    </View>
-
-    <View style={{flex: 1, flexDirection: 'row', paddingLeft: 30, paddingRight: 30, justifyContent: 'space-between'}}>
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='droplet'
-          type='feather'
-          color='#fff'
-          onPress={() => setHumidadeModal(true)}
-        />
-        <Text style={styles.infos}>{tempo.current.humidity}%</Text>
-      </View>
-
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='cloud'
-          type='feather'
-          color='#fff'
-        />
-        <Text style={styles.infos}>{tempo.current.clouds}%</Text>
-      </View>
-
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='sun'
-          type='feather'
-          color='#fff'
-          onPress={() => setUviModal(true)}
-        />
-        <Text style={styles.infos}>{tempo.current.uvi}</Text>
-      </View>
-    </View>
-
-
-    <View style={{flex: 1, flexDirection: 'row', paddingLeft: 30, paddingRight: 30, paddingTop: 30, justifyContent: 'space-between'}}>
-
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='wind'
-          type='feather'
-          color='#fff'
-        />
-        <Text style={styles.infos}>{tempo.current.wind_speed.toFixed(0)}m/s</Text>
-      </View>      
-
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='wind'
-          type='feather'
-          color='#fff'
-          onPress={() => {setModalVisible(true)}}
-        />
-        <Text style={styles.infos}>{tempo.current.wind_gust ? tempo.current.wind_gust : '0'}m/s</Text>
-      </View>
-
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='arrow-up-right'
-          type='feather'
-          color='#fff'
-        />
-        <Text style={styles.infos}>{tempo.current.wind_deg}º</Text>
-      </View> 
-
-    </View>
-
-    <View style={{flex: 1, flexDirection: 'row', paddingLeft: 30, paddingRight: 30, paddingTop: 30,
-                  justifyContent: 'space-around'}}>
-
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='cloud-rain'
-          type='feather'
-          color='#fff'
-        />
-        <Text style={styles.infos}>{tempo.current.rain ? tempo.current.rain['1h'] : '0'}mm</Text>
-      </View>
-
-      <View style={{flexDirection: 'row'}}>
-        <Icon
-          name='cloud-snow'
-          type='feather'
-          color='#fff'
-        />
-        <Text style={styles.infos}>{tempo.current.snow ? tempo.current.snow['1h'] : '0'}mm</Text>
-      </View> 
-
-    </View>
+    <Text style={{color: '#fff', textAlign: 'center', fontWeight: 'bold', marginTop: -10, color: '#999', fontSize: 15, marginBottom: 10}}>{tempo.timezone}</Text>
+    <GeralTempo horarioBrasil={horarioBrasil} data={tempo}
+    nascerSol={nascerSol} porSol={porSol} setModalVisible={() => setModalVisible(true)}
+    setHumidadeModal={() => setHumidadeModal(true)} setUviModal={() => setUviModal(true)}/>   
+ 
 
     <Divider width={1} color={'#666'} insetType="middle" inset={true} style={{paddingTop: 25}} />
 

@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, Linking  } from 'react-native';
 import { Icon, Button } from '@rneui/themed';
-import moment from 'moment';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
