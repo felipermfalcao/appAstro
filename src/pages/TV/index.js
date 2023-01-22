@@ -100,7 +100,7 @@ else
     <FlatList
         data={programming}
         renderItem={({ item }) => (
-            <View style={{flex: 1, paddingLeft: 35}}>
+            <View style={{flex: 1, paddingLeft: 35, paddingRight: 20}}>
                 <Text style={{fontSize: 18, fontWeight: 'bold'}}>{item.h2}</Text>
 
                 <View style={{flexDirection: 'row'}}>
