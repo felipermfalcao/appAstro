@@ -1,5 +1,5 @@
 
-# appAstro React Native (back-end PHP)
+# appAstro React Native CLI (back-end PHP)
 
 Aplicativo feito como estudo. Sistema de autenticação e API's desenvolvidadas em PHP.
 
