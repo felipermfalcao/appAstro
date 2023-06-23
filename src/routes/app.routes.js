@@ -9,6 +9,7 @@ import Futebol from '../pages/Futebol/futebol';
 import Satelite from '../pages/Satelite/satelite';
 import CustomDrawer from '../components/CustomDrawer';
 import TV from '../pages/TV';
+import Games from '../pages/Games';
 
 const Drawer = createDrawerNavigator();
 
@@ -110,6 +111,20 @@ function AppRoutes() {
       drawerIcon: ({focused, size}) => (
         <Icon
         name='tv-outline'
+        type='ionicon'
+        size={size}
+        color={focused ? '#2670DE' : '#fff'}
+      />
+     ),
+     }}    
+    />
+
+<Drawer.Screen name='Games' component={Games}
+    options={{ 
+      headerShown: true,
+      drawerIcon: ({focused, size}) => (
+        <Icon
+        name='game-controller-outline'
         type='ionicon'
         size={size}
         color={focused ? '#2670DE' : '#fff'}
