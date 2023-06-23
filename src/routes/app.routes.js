@@ -9,7 +9,7 @@ import Futebol from '../pages/Futebol/futebol';
 import Satelite from '../pages/Satelite/satelite';
 import CustomDrawer from '../components/CustomDrawer';
 import TV from '../pages/TV';
-import Games from '../pages/Games';
+import Games from '../pages/Games/games';
 
 const Drawer = createDrawerNavigator();
 
