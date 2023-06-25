@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, 
-         FlatList, Modal, Pressable } from 'react-native';
+         FlatList, Modal, Pressable, TextInput, TouchableOpacity } from 'react-native';
 import { Icon, Button, Divider } from '@rneui/themed';
 import axios from 'axios';
 
@@ -8,12 +8,13 @@ import axios from 'axios';
 import { AuthContext } from '../../context/auth';
 import ModalGames from './modal';
 
-export default function Games1() {
+export default function PesquisaGames() {
   const {dadosUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [games, setGames] = useState({});
   const [selectedGame, setSelectedGame] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [pesquisa, setPesquisa] = useState('');
 
   const platformImages = {
     "pc": require('../../img/pc.png'),
@@ -27,31 +28,31 @@ export default function Games1() {
     "playstation3": require('../../img/play3.png'),
     "xbox-series-x": require('../../img/xboxseries.png'),
     "xbox-one": require('../../img/xbox.png'),
-    "xbox360": require('../../img/xbox360.png'),
     "xbox-series-s": require('../../img/xboxseries.png'),
     "android": require('../../img/android.png'),
     "ios": require('../../img/ios.png'),
+    "xbox360": require('../../img/xbox360.png'),
   };
 
 useEffect(() => {
 
-  async function loadGames (){
-
-    axios.get('https://api.rawg.io/api/games?dates=2023-01-01,2023-12-31&ordering=-metacritic&key=7e1f5fc3a28545aab63e6bf18f5ac40e')
-      .then(response => {
-        setGames(response.data);
-        //console.log(games.results[7].name);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    
-  }
-
-  loadGames();
+    loadGames();
 
 }, []);
+
+const loadGames = () => {
+    const url = `https://api.rawg.io/api/games?search_precise=${pesquisa}&key=7e1f5fc3a28545aab63e6bf18f5ac40e`;
+
+    axios
+      .get(url)
+      .then((response) => {
+        setGames(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
 const openModal = (game) => {
   setSelectedGame(game);
@@ -62,6 +63,11 @@ const closeModal = () => {
   setSelectedGame(null);
   setModalVisible(false);
 };
+
+const handleSearch = () => {
+    loadGames();
+    setLoading(true);
+  };
 
 if(loading)
 {
@@ -76,6 +82,19 @@ else
 {
  return (
   <View style={styles.container}>
+
+<View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+        <TextInput
+          style={{ flex: 1, borderColor: '#ccc', borderRadius: 5, padding: 10 }}
+          placeholder="Digite o nome do jogo"
+          value={pesquisa}
+          onChangeText={setPesquisa}
+        />
+        <TouchableOpacity style={{ marginLeft: 10, backgroundColor: '#202020', borderRadius: 5, padding: 10 }} onPress={handleSearch}>
+          <Text>Pesquisar</Text>
+        </TouchableOpacity>
+      </View>
+
     <Text style={{fontSize: 20, textAlign: 'center', paddingTop: 5, paddingBottom:20}}>Melhores do ano</Text>
 
     <FlatList

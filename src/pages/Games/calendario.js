@@ -11,8 +11,8 @@ export default function Calendario() {
   const {dadosUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
   const [games, setGames] = useState({});
-  const [year, setYear] = useState('2023');
-  const [month, setMonth] = useState('09');
+  const [year, setYear] = useState('');
+  const [month, setMonth] = useState('');
   const [fetchData, setFetchData] = useState(false);
 
   const platformImages = {
@@ -27,6 +27,10 @@ export default function Calendario() {
     "xbox-series-s": require('../../img/xboxseries.png'),
     "android": require('../../img/android.png'),
     "ios": require('../../img/ios.png'),
+    "xbox360": require('../../img/xbox360.png'),
+    "playstation1": require('../../img/play1.png'),
+    "playstation2": require('../../img/play2.png'),
+    "playstation3": require('../../img/play3.png'),
   };
 
   const handleYearChange = (value) => {
@@ -47,6 +51,15 @@ export default function Calendario() {
     setFetchData(false);
   }, [fetchData]);
 
+  useEffect(() => {
+    const currentDate = new Date();
+    const anoAtual = currentDate.getFullYear();
+    const mesAtual = currentDate.getMonth() + 1;
+  
+    setYear(anoAtual.toString());
+    setMonth('0' + mesAtual);
+  }, []);
+
   const loadGames = () => {
     const url = `https://api.rawg.io/api/games?key=7e1f5fc3a28545aab63e6bf18f5ac40e&dates=${year}-${month}-01,${year}-${month}-30`;
 
@@ -60,6 +73,34 @@ export default function Calendario() {
         console.log(error);
       });
   };
+
+  function somaMes() {
+    const mesAtual = parseInt(month) + 1;
+    setMonth('0' + mesAtual);
+    setFetchData(true);
+    setLoading(true);
+  }
+
+  function subtraiMes() {
+    const mesAtual = parseInt(month) - 1;
+    setMonth('0' + mesAtual);
+    setFetchData(true);
+    setLoading(true);
+  }
+
+  function somaAno() {
+    const anoAtual = parseInt(year) + 1;
+    setYear(anoAtual);
+    setFetchData(true);
+    setLoading(true);
+  }
+
+  function subtraiAno() {
+    const anoAtual = parseInt(year) - 1;
+    setYear(anoAtual);
+    setFetchData(true);
+    setLoading(true);
+  }
 
 if(loading)
 {
@@ -76,32 +117,44 @@ else
   <View style={styles.container}>
     <Text style={{fontSize: 20, textAlign: 'center', paddingTop: 5, paddingBottom:5}}>Calendário de {month} de {year}</Text>
 
-    <View style={{flexDirection: 'row'}}>
+    <View style={{flexDirection: 'row', alignSelf: 'center', paddingBottom: 10}}>
         <View style={{marginLeft: 10, marginRight: 20}}>
             <View>
                 <Text>Ano:</Text>
                 <TextInput
                 style={{borderWidth: 1,
                     borderColor: '#ccc',
-                    paddingVertical: 5,
-                    paddingHorizontal: 10,}}
+                    paddingVertical: 0,
+                    paddingHorizontal: 5,}}
                 value={year}
                 onChangeText={handleYearChange}
+                keyboardType="numeric"
                 />
             </View>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{marginRight: 5}}><Button onPress={subtraiAno} title="-" /></View>
+              <View><Button onPress={somaAno} title="+" /></View>              
+            </View>
+          </View>
+          <View style={{marginLeft: 10, marginRight: 20}}>
             <View>
                 <Text>Mês:</Text>
                 <TextInput
                 style={{borderWidth: 1,
                     borderColor: '#ccc',
-                    paddingVertical: 5,
-                    paddingHorizontal: 10,}}
+                    paddingVertical: 0,
+                    paddingHorizontal: 5,}}
                 value={month}
                 onChangeText={handleMonthChange}
+                keyboardType="numeric"
                 />
             </View>
-        </View>
-        <View>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{marginRight: 5}}><Button onPress={subtraiMes} title="-" /></View>
+              <View><Button onPress={somaMes} title="+" /></View>              
+            </View>
+          </View>
+        <View style={{marginTop: 20}}>
             <Button onPress={handleSearch} title="Buscar" />
         </View>
     </View>
@@ -127,7 +180,7 @@ else
                   <Image key={platform.platform.slug} source={platformImages[platform.platform.slug]} style={{width: 20, height: 20, marginRight: 5}} />
                 ))}
               </View>
-              <View style={{paddingRight: 10, padding: 0}}>
+              <View style={{paddingRight: 7, padding: 0}}>
                 <Text style={{fontSize: 15, fontWeight: 'bold', color: '#6DC849',  borderColor: '#6DC849', borderStyle: 'solid', borderWidth: 1, padding: 2}}>{item.metacritic}</Text>
               </View>
             </View>

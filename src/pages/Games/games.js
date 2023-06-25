@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthContext } from '../../context/auth';
 import Games1 from './games1';
 import Calendario from './calendario';
+import PesquisaGames from './pesquisa';
 
 export default function Games() {
   const {dadosUser} = useContext(AuthContext);
@@ -30,8 +31,8 @@ export default function Games() {
           else if (route.name === 'Calendário') {
             iconName = focused ? 'calendar' : 'calendar-outline';
           }
-          else if (route.name === 'Todos') {
-            iconName = focused ? 'football' : 'football-outline';
+          else if (route.name === 'Pesquisa') {
+            iconName = focused ? 'search' : 'search-outline';
           }
           // You can return any component that you like here!
           return <Icon name={iconName} type='ionicon' size={size} color={color} />;
@@ -48,6 +49,10 @@ export default function Games() {
         <Tab.Screen
         options={{headerShown: false}}
          name="Calendário" component={Calendario} />
+
+        <Tab.Screen
+        options={{headerShown: false}}
+         name="Pesquisa" component={PesquisaGames} />
 
       </Tab.Navigator>
     </NavigationContainer>
