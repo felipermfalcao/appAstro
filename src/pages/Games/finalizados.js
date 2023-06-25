@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, 
-         FlatList, Modal, Pressable, TextInput, TouchableOpacity } from 'react-native';
+         FlatList, Modal, Pressable } from 'react-native';
 import { Icon, Button, Divider } from '@rneui/themed';
 import axios from 'axios';
 
@@ -8,13 +8,12 @@ import axios from 'axios';
 import { AuthContext } from '../../context/auth';
 import ModalGames from './modal';
 
-export default function PesquisaGames() {
+export default function Finalizados() {
   const {dadosUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
-  const [games, setGames] = useState({});
+  const [games, setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [pesquisa, setPesquisa] = useState('');
 
   const platformImages = {
     "pc": require('../../img/pc.png'),
@@ -28,31 +27,31 @@ export default function PesquisaGames() {
     "playstation3": require('../../img/play3.png'),
     "xbox-series-x": require('../../img/xboxseries.png'),
     "xbox-one": require('../../img/xbox.png'),
+    "xbox360": require('../../img/xbox360.png'),
     "xbox-series-s": require('../../img/xboxseries.png'),
     "android": require('../../img/android.png'),
     "ios": require('../../img/ios.png'),
-    "xbox360": require('../../img/xbox360.png'),
   };
 
 useEffect(() => {
 
-    loadGames();
+  async function loadGames (){
 
-}, []);
-
-const loadGames = () => {
-    const url = `https://api.rawg.io/api/games?search=${pesquisa}&key=7e1f5fc3a28545aab63e6bf18f5ac40e`;
-
-    axios
-      .get(url)
-      .then((response) => {
+    axios.get('https://felipefalcao.com.br/appAstro/games/')
+      .then(response => {
         setGames(response.data);
+        //console.log(games[0].nome);
         setLoading(false);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
-  };
+    
+  }
+
+  loadGames();
+
+}, []);
 
 const openModal = (game) => {
   setSelectedGame(game);
@@ -63,11 +62,6 @@ const closeModal = () => {
   setSelectedGame(null);
   setModalVisible(false);
 };
-
-const handleSearch = () => {
-    loadGames();
-    setLoading(true);
-  };
 
 if(loading)
 {
@@ -82,23 +76,10 @@ else
 {
  return (
   <View style={styles.container}>
-
-<View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
-        <TextInput
-          style={{ flex: 1, borderColor: '#ccc', borderRadius: 5, padding: 10, color: '#fff' }}
-          placeholder="Digite o nome do jogo"
-          value={pesquisa}
-          onChangeText={setPesquisa}
-        />
-        <TouchableOpacity style={{ marginLeft: 10, backgroundColor: '#202020', borderRadius: 5, padding: 10 }} onPress={handleSearch}>
-          <Text style={{color: '#fff'}}>Pesquisar</Text>
-        </TouchableOpacity>
-      </View>
-
-    <Text style={{fontSize: 20, textAlign: 'center', paddingTop: 5, paddingBottom:20, color: '#fff'}}>Melhores do ano</Text>
+    <Text style={{fontSize: 20, textAlign: 'center', paddingTop: 5, paddingBottom:20, color: '#fff'}}>Finalizados</Text>
 
     <FlatList
-      data={games.results}
+      data={games}
       keyExtractor={item => item.id.toString()}
       numColumns={2}
       renderItem={({item}) => {
@@ -111,19 +92,9 @@ else
         <Pressable style={{flex: 1, flexDirection: 'row', alignItems: 'center', padding: 5}} onPress={() => openModal(item)}>
         <View style={{flex: 1}}>
           <View style={{flex: 2, backgroundColor: '#202020', borderRadius: 10}}>
-            <Image source={{uri: item.background_image}} style={{width: '100%', height: 100, borderTopLeftRadius: 10, borderTopRightRadius: 10}} />
-            <Text style={{color: '#fff', fontSize: 18, paddingLeft: 10, fontWeight: 'bold', paddingTop:5, paddingBottom: 5, paddingRight: 5}}>{item.name}</Text>
-            <View style={{flex: 1, flexDirection: 'row'}}> 
-              <View style={{flex: 2, flexDirection: 'row', paddingLeft: 10, paddingBottom: 5}}>
-                {item.platforms.map(platform => (
-                  <Image key={platform.platform.slug} source={platformImages[platform.platform.slug]} style={{width: 20, height: 20, marginRight: 5}} />
-                ))}
-              </View>
-              <View style={{paddingRight: 7, padding: 0}}>
-                <Text style={{fontSize: 15, fontWeight: 'bold', color: '#6DC849',  borderColor: '#6DC849', borderStyle: 'solid', borderWidth: 1, padding: 2}}>{item.metacritic}</Text>
-              </View>
-            </View>
-            <Text style={{fontSize: 13, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, color: '#fff'}}>Lançamento: {formatDate(item.released)}</Text>
+            <Image source={{uri: item.imagem}} style={{width: '100%', height: 100, borderTopLeftRadius: 10, borderTopRightRadius: 10}} />
+            <Text style={{color: '#fff', fontSize: 18, paddingLeft: 10, fontWeight: 'bold', paddingTop:5, paddingBottom: 5, paddingRight: 5}}>{item.nome}</Text>
+            <Text style={{fontSize: 13, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, color: '#fff'}}>Lançamento: {formatDate(item.dataLancamento)}</Text>
           </View>
         </View>
         </Pressable>

@@ -115,17 +115,17 @@ else
 {
  return (
   <View style={styles.container}>
-    <Text style={{fontSize: 20, textAlign: 'center', paddingTop: 5, paddingBottom:5}}>Calendário de {month} de {year}</Text>
+    <Text style={{fontSize: 20, textAlign: 'center', paddingTop: 5, paddingBottom:5, color: '#fff'}}>Calendário de {month} de {year}</Text>
 
     <View style={{flexDirection: 'row', alignSelf: 'center', paddingBottom: 10}}>
         <View style={{marginLeft: 10, marginRight: 20}}>
             <View>
-                <Text>Ano:</Text>
+                <Text style={{color: '#fff'}}>Ano:</Text>
                 <TextInput
                 style={{borderWidth: 1,
                     borderColor: '#ccc',
                     paddingVertical: 0,
-                    paddingHorizontal: 5,}}
+                    paddingHorizontal: 5, color: '#fff'}}
                 value={year}
                 onChangeText={handleYearChange}
                 keyboardType="numeric"
@@ -138,12 +138,12 @@ else
           </View>
           <View style={{marginLeft: 10, marginRight: 20}}>
             <View>
-                <Text>Mês:</Text>
+                <Text style={{color: '#fff'}}>Mês:</Text>
                 <TextInput
                 style={{borderWidth: 1,
                     borderColor: '#ccc',
                     paddingVertical: 0,
-                    paddingHorizontal: 5,}}
+                    paddingHorizontal: 5, color: '#fff'}}
                 value={month}
                 onChangeText={handleMonthChange}
                 keyboardType="numeric"
@@ -184,7 +184,7 @@ else
                 <Text style={{fontSize: 15, fontWeight: 'bold', color: '#6DC849',  borderColor: '#6DC849', borderStyle: 'solid', borderWidth: 1, padding: 2}}>{item.metacritic}</Text>
               </View>
             </View>
-            <Text style={{fontSize: 13, paddingTop: 10, paddingBottom: 10, paddingLeft: 10}}>Lançamento: {formatDate(item.released)}</Text>
+            <Text style={{fontSize: 13, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, color: '#fff'}}>Lançamento: {formatDate(item.released)}</Text>
           </View>
         </View>
         )

@@ -76,7 +76,7 @@ else
 {
  return (
   <View style={styles.container}>
-    <Text style={{fontSize: 20, textAlign: 'center', paddingTop: 5, paddingBottom:20}}>Melhores do ano</Text>
+    <Text style={{fontSize: 20, textAlign: 'center', paddingTop: 5, paddingBottom:20, color: '#fff'}}>Melhores do ano</Text>
 
     <FlatList
       data={games.results}
@@ -104,7 +104,7 @@ else
                 <Text style={{fontSize: 15, fontWeight: 'bold', color: '#6DC849',  borderColor: '#6DC849', borderStyle: 'solid', borderWidth: 1, padding: 2}}>{item.metacritic}</Text>
               </View>
             </View>
-            <Text style={{fontSize: 13, paddingTop: 10, paddingBottom: 10, paddingLeft: 10}}>Lançamento: {formatDate(item.released)}</Text>
+            <Text style={{fontSize: 13, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, color: '#fff'}}>Lançamento: {formatDate(item.released)}</Text>
           </View>
         </View>
         </Pressable>

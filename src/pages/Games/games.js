@@ -9,6 +9,7 @@ import { AuthContext } from '../../context/auth';
 import Games1 from './games1';
 import Calendario from './calendario';
 import PesquisaGames from './pesquisa';
+import Finalizados from './finalizados';
 
 export default function Games() {
   const {dadosUser} = useContext(AuthContext);
@@ -34,6 +35,9 @@ export default function Games() {
           else if (route.name === 'Pesquisa') {
             iconName = focused ? 'search' : 'search-outline';
           }
+          else if (route.name === 'Finalizados') {
+            iconName = focused ? 'star' : 'star-outline';
+          }
           // You can return any component that you like here!
           return <Icon name={iconName} type='ionicon' size={size} color={color} />;
         },
@@ -53,6 +57,10 @@ export default function Games() {
         <Tab.Screen
         options={{headerShown: false}}
          name="Pesquisa" component={PesquisaGames} />
+
+        <Tab.Screen
+        options={{headerShown: false}}
+         name="Finalizados" component={Finalizados} />
 
       </Tab.Navigator>
     </NavigationContainer>
