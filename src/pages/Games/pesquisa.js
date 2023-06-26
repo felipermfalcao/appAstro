@@ -108,7 +108,7 @@ else
         };
 
         return(
-        <Pressable style={{flex: 1, flexDirection: 'row', alignItems: 'center', padding: 5}} onPress={() => openModal(item)}>
+          <Pressable style={{flex: 1, flexDirection: 'row', alignItems: 'center', padding: 5}} onPress={() => {openModal(item); console.log('clicou');}}>
         <View style={{flex: 1}}>
           <View style={{flex: 2, backgroundColor: '#202020', borderRadius: 10}}>
             <Image source={{uri: item.background_image}} style={{width: '100%', height: 100, borderTopLeftRadius: 10, borderTopRightRadius: 10}} />

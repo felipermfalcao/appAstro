@@ -11,6 +11,7 @@ import ModalGames from './modal';
 export default function Finalizados() {
   const {dadosUser} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
+  const [loadingBtn, setLoadingBtn] = useState(true);
   const [games, setGames] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -33,25 +34,25 @@ export default function Finalizados() {
     "ios": require('../../img/ios.png'),
   };
 
-useEffect(() => {
+  function loadGames (){
 
-  async function loadGames (){
+    setLoadingBtn(true);
 
     axios.get('https://felipefalcao.com.br/appAstro/games/')
       .then(response => {
         setGames(response.data);
         //console.log(games[0].nome);
         setLoading(false);
+        setLoadingBtn(false);
       })
       .catch(error => {
         console.log(error);
       });
-    
   }
-
-  loadGames();
-
-}, []);
+  
+  useEffect(() => {
+    loadGames();
+  }, []);
 
 const openModal = (game) => {
   setSelectedGame(game);
@@ -62,6 +63,7 @@ const closeModal = () => {
   setSelectedGame(null);
   setModalVisible(false);
 };
+
 
 if(loading)
 {
@@ -77,6 +79,18 @@ else
  return (
   <View style={styles.container}>
     <Text style={{fontSize: 20, textAlign: 'center', paddingTop: 5, paddingBottom:20, color: '#fff'}}>Finalizados</Text>
+    <Button
+              loading={loadingBtn}
+              buttonStyle={{ backgroundColor: '#2089DC', borderRadius: 10}}
+              onPress={() => loadGames()}
+              icon={{
+                name: 'refresh-outline',
+                type: 'ionicon',
+                size: 22,
+                color: 'white',
+              }}
+              iconLeft
+      />
 
     <FlatList
       data={games}

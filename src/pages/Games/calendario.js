@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator, 
-         FlatList, Modal, TextInput } from 'react-native';
+         FlatList, Modal, TextInput, Pressable } from 'react-native';
 import { Icon, Button, Divider } from '@rneui/themed';
 import axios from 'axios';
 
-
 import { AuthContext } from '../../context/auth';
+import ModalGames from './modal';
 
 export default function Calendario() {
   const {dadosUser} = useContext(AuthContext);
@@ -14,6 +14,8 @@ export default function Calendario() {
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
   const [fetchData, setFetchData] = useState(false);
+  const [selectedGame, setSelectedGame] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const platformImages = {
     "pc": require('../../img/pc.png'),
@@ -102,6 +104,16 @@ export default function Calendario() {
     setLoading(true);
   }
 
+  const openModal = (game) => {
+    setSelectedGame(game);
+    setModalVisible(true);
+  };
+  
+  const closeModal = () => {
+    setSelectedGame(null);
+    setModalVisible(false);
+  };
+
 if(loading)
 {
   return(
@@ -170,27 +182,35 @@ else
         };
 
         return(
-        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', padding: 5}}>
-          <View style={{flex: 2, backgroundColor: '#202020', borderRadius: 10}}>
-            <Image source={{uri: item.background_image}} style={{width: '100%', height: 100, borderTopLeftRadius: 10, borderTopRightRadius: 10}} />
-            <Text style={{color: '#fff', fontSize: 18, paddingLeft: 10, fontWeight: 'bold', paddingTop:5, paddingBottom: 5, paddingRight: 5}}>{item.name}</Text>
-            <View style={{flex: 1, flexDirection: 'row'}}> 
-              <View style={{flex: 2, flexDirection: 'row', paddingLeft: 10, paddingBottom: 5}}>
-                {item.platforms.map(platform => (
-                  <Image key={platform.platform.slug} source={platformImages[platform.platform.slug]} style={{width: 20, height: 20, marginRight: 5}} />
-                ))}
+        <Pressable style={{flex: 1, flexDirection: 'row', alignItems: 'center', padding: 5}} onPress={() => openModal(item)}>
+          <View style={{flex: 1}}>
+            <View style={{flex: 2, backgroundColor: '#202020', borderRadius: 10}}>
+              <Image source={{uri: item.background_image}} style={{width: '100%', height: 100, borderTopLeftRadius: 10, borderTopRightRadius: 10}} />
+              <Text style={{color: '#fff', fontSize: 18, paddingLeft: 10, fontWeight: 'bold', paddingTop:5, paddingBottom: 5, paddingRight: 5}}>{item.name}</Text>
+              <View style={{flex: 1, flexDirection: 'row'}}> 
+                <View style={{flex: 2, flexDirection: 'row', paddingLeft: 10, paddingBottom: 5}}>
+                  {item.platforms.map(platform => (
+                    <Image key={platform.platform.slug} source={platformImages[platform.platform.slug]} style={{width: 20, height: 20, marginRight: 5}} />
+                  ))}
+                </View>
+                <View style={{paddingRight: 7, padding: 0}}>
+                  <Text style={{fontSize: 15, fontWeight: 'bold', color: '#6DC849',  borderColor: '#6DC849', borderStyle: 'solid', borderWidth: 1, padding: 2}}>{item.metacritic}</Text>
+                </View>
               </View>
-              <View style={{paddingRight: 7, padding: 0}}>
-                <Text style={{fontSize: 15, fontWeight: 'bold', color: '#6DC849',  borderColor: '#6DC849', borderStyle: 'solid', borderWidth: 1, padding: 2}}>{item.metacritic}</Text>
-              </View>
+              <Text style={{fontSize: 13, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, color: '#fff'}}>Lançamento: {formatDate(item.released)}</Text>
             </View>
-            <Text style={{fontSize: 13, paddingTop: 10, paddingBottom: 10, paddingLeft: 10, color: '#fff'}}>Lançamento: {formatDate(item.released)}</Text>
           </View>
-        </View>
+        </Pressable>
         )
     }}    
     >
     </FlatList>
+
+    {selectedGame && (
+          <Modal visible={modalVisible} animationType="slide" hardwareAccelerated={true}>
+            <ModalGames data={selectedGame} setModalVisible={() => setModalVisible(false)}/>
+          </Modal>
+    )}
   </View>
 
   );
